@@ -1,0 +1,18 @@
+name: build_annotations
+channels:
+    - bioconda
+    - conda-forge
+
+dependencies:
+    - snakemake=5.1.5
+    - gawk=4.2.1
+    - sed=4.4
+    - pybedtools=0.7.10
+    - numpy=1.13.3
+    - pandas=0.23.1
+    - bedtools=2.27.1
+    - pybigwig=0.3.10
+    - biopython=1.69
+
+
+

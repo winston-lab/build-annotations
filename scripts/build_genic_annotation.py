@@ -61,3 +61,4 @@ outdf[['start', 'end']] = outdf[['start', 'end']].astype(np.uint64)
 outdf['score'] = outdf['score'].astype(np.float64)
 outdf = outdf.query('(end-start)>0')
 bedout = pybt.BedTool.from_dataframe(outdf).truncate_to_chrom(chrom_dict).remove_invalid().moveto(args.outpath)
+
