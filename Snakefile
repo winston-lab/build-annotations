@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import os
+
 configfile: "config.yaml"
 
 localrules:
@@ -11,10 +13,10 @@ localrules:
 
 rule all:
     input:
-        genic_regions = os.path.dirname(config["genome"]["transcripts"]) + "/" + config["genome"]["prefix"] + "genic-regions.bed",
-        convergent_regions = os.path.dirname(config["genome"]["transcripts"]) + "/" + config["genome"]["prefix"] + "convergent-regions.bed",
-        divergent_regions = os.path.dirname(config["genome"]["transcripts"]) + "/" + config["genome"]["prefix"] + "divergent-regions.bed",
-        intergenic_regions = os.path.dirname(config["genome"]["transcripts"]) + "/" + config["genome"]["prefix"] + "intergenic-regions.bed"
+        genic_regions = os.path.dirname(os.path.abspath(config["genome"]["transcripts"])) + "/" + config["genome"]["prefix"] + "genic-regions.bed",
+        convergent_regions = os.path.dirname(os.path.abspath(config["genome"]["transcripts"])) + "/" + config["genome"]["prefix"] + "convergent-regions.bed",
+        divergent_regions = os.path.dirname(os.path.abspath(config["genome"]["transcripts"])) + "/" + config["genome"]["prefix"] + "divergent-regions.bed",
+        intergenic_regions = os.path.dirname(os.path.abspath(config["genome"]["transcripts"])) + "/" + config["genome"]["prefix"] + "intergenic-regions.bed"
 
 rule build_genic_annotation:
     input:
@@ -22,7 +24,7 @@ rule build_genic_annotation:
         orfs = config["genome"]["orf-annotation"],
         chrsizes = config["genome"]["chrsizes"]
     output:
-        os.path.dirname(config["genome"]["transcripts"]) + "/" + config["genome"]["prefix"] + "genic-regions.bed"
+        os.path.dirname(os.path.abspath(config["genome"]["transcripts"])) + "/" + config["genome"]["prefix"] + "genic-regions.bed"
     params:
         windowsize = config["genic-windowsize"]
     conda: "envs/build_annotations.yaml"
@@ -35,7 +37,7 @@ rule build_convergent_annotation:
     input:
         transcripts = config["genome"]["transcripts"],
     output:
-        os.path.dirname(config["genome"]["transcripts"]) + "/" + config["genome"]["prefix"] + "convergent-regions.bed"
+        os.path.dirname(os.path.abspath(config["genome"]["transcripts"])) + "/" + config["genome"]["prefix"] + "convergent-regions.bed"
     params:
         max_dist = config["max-convergent-dist"]
     conda: "envs/build_annotations.yaml"
@@ -49,7 +51,7 @@ rule build_divergent_annotation:
         transcripts = config["genome"]["transcripts"],
         chrsizes = config["genome"]["chrsizes"]
     output:
-        os.path.dirname(config["genome"]["transcripts"]) + "/" + config["genome"]["prefix"] + "divergent-regions.bed"
+        os.path.dirname(os.path.abspath(config["genome"]["transcripts"])) + "/" + config["genome"]["prefix"] + "divergent-regions.bed"
     params:
         max_dist = config["max-divergent-dist"]
     conda: "envs/build_annotations.yaml"
@@ -63,7 +65,7 @@ rule build_intergenic_annotation:
         transcripts = config["genome"]["transcripts"],
         chrsizes = config["genome"]["chrsizes"]
     output:
-        os.path.dirname(config["genome"]["transcripts"]) + "/" + config["genome"]["prefix"] + "intergenic-regions.bed"
+        os.path.dirname(os.path.abspath(config["genome"]["transcripts"])) + "/" + config["genome"]["prefix"] + "intergenic-regions.bed"
     params:
         genic_up = config["genic-windowsize"]
     conda: "envs/build_annotations.yaml"
@@ -76,7 +78,7 @@ rule build_gc_coverage:
     input:
         fasta = config["genome"]["fasta"],
     output:
-        os.path.splitext(config["genome"]["fasta"])[0] + "-GC_pct.bw"
+        os.path.splitext(os.path.abspath(config["genome"]["fasta"]))[0] + "-GC_pct.bw"
     params:
         binsize = 11 #must be odd integer
     conda: "envs/build_annotations.yaml"
