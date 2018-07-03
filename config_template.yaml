@@ -1,7 +1,6 @@
 
 genome:
     fasta : ../genome/S_pombe.ASM294v2.fa
-    chrsizes : ../genome/S_pombe.ASM294v2.chrsizes.tsv
     orf-annotation: ../genome/annotations/S_pombe_ORFs.bed
     transcripts : ../genome/annotations/S_pombe_alltranscripts-adjustedTSS.bed
     prefix : Spom_
