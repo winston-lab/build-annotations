@@ -26,7 +26,7 @@ Given a FASTA file, transcript annotation, and ORF annotation, this pipeline cre
 **0**. Clone this repository
 
 ```bash
-git clone build-annotations
+git clone https://github.com/winston-lab/build-annotations.git
 ```
 
 **1**. Make a copy of the configuration file template `config_template.yaml` called `config.yaml`, and edit `config.yaml` to suit your needs.
@@ -43,7 +43,7 @@ vim config.yaml    # or use your favorite editor
 # make your edits
 ```
 
-**2**. STOP! If you only need this pipeline as a subworkflow of another pipeline, you're done! If you really want to run this pipeline independently, create and activate the `build_annotations` virtual environment for the pipeline using conda. The virtual environment creation can take a while.
+**2**. **STOP!** If you only need this pipeline as a subworkflow of another pipeline, you're done! If you really want to run this pipeline independently, create and activate the `build_annotations` virtual environment for the pipeline using conda. The virtual environment creation can take a while.
 
 ```bash
 # create the snakemake_default environment
@@ -59,12 +59,12 @@ source activate build_annotations
 **3**. Do a dry run of the pipeline to see what files will be created.
 
 ```bash
-snakemake -p --rerun-incomplete --use-conda --dry-run
+snakemake -p --dry-run
 ```
 
 **4**. Run the pipeline using the above command, omitting the `--dry-run` flag. 
 
 ```bash
-snakemake -p --rerun-incomplete --use-conda
+snakemake -p
 ```
 
