@@ -1,12 +1,12 @@
-
+---
 genome:
-    fasta : ../genome/S_pombe.ASM294v2.fa
+    fasta: ../genome/S_pombe.ASM294v2.fa
     orf-annotation: ../genome/annotations/S_pombe_ORFs.bed
-    transcripts : ../genome/annotations/S_pombe_alltranscripts-adjustedTSS.bed
-    prefix : Spom_
+    transcripts: ../genome/annotations/S_pombe_alltranscripts-adjustedTSS.bed
+    prefix: Spom_
 
-genic-windowsize: 30 #distance added to EACH side of the annotated TSS to determine genic regions
-max-convergent-dist : 1000 #maximum distance downstream of genic sense TSS for an antisense peak to be considered convergent
-max-divergent-dist : 500 #maximum distance upstream of genic sense TSS for an antisense peak to be considered divergent
+genic-windowsize: 30  # distance added to EACH side of the annotated TSS to determine genic regions
+max-convergent-dist: 1000  # maximum distance downstream of genic sense TSS for an antisense peak to be considered convergent
+max-divergent-dist: 500  # maximum distance upstream of genic sense TSS for an antisense peak to be considered divergent
 
 gc-pct-window: 21
