@@ -16,7 +16,8 @@ rule all:
         genic_regions = os.path.dirname(os.path.abspath(config["genome"]["transcripts"])) + "/" + config["genome"]["prefix"] + "genic-regions.bed",
         convergent_regions = os.path.dirname(os.path.abspath(config["genome"]["transcripts"])) + "/" + config["genome"]["prefix"] + "convergent-regions.bed",
         divergent_regions = os.path.dirname(os.path.abspath(config["genome"]["transcripts"])) + "/" + config["genome"]["prefix"] + "divergent-regions.bed",
-        intergenic_regions = os.path.dirname(os.path.abspath(config["genome"]["transcripts"])) + "/" + config["genome"]["prefix"] + "intergenic-regions.bed"
+        intergenic_regions = os.path.dirname(os.path.abspath(config["genome"]["transcripts"])) + "/" + config["genome"]["prefix"] + "intergenic-regions.bed",
+        gc_coverage = os.path.splitext(os.path.abspath(config["genome"]["fasta"]))[0] + "-GC_pct.bw"
 
 rule build_genic_annotation:
     input:
@@ -80,7 +81,7 @@ rule build_gc_coverage:
     output:
         os.path.splitext(os.path.abspath(config["genome"]["fasta"]))[0] + "-GC_pct.bw"
     params:
-        binsize = 11 #must be odd integer
+        binsize = config["gc-pct-window"] #must be odd integer
     conda: "envs/build_annotations.yaml"
     log: "logs/build_gc_coverage.log"
     shell: """
