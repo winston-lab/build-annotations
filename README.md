@@ -3,7 +3,7 @@
 
 ## description
 
-Given a FASTA file, transcript annotation, and ORF annotation, this pipeline creates several annotation files (genic, convergent, divergent, and intergenic regions) which are useful for other pipelines. It also creates a coverage file of GC% in an 11bp running window. This pipeline is usually called as a subworkflow of other pipelines rather than being run independently. This allows multiple pipelines (e.g. for different assays) to share the same 'build-annotations' pipeline.
+Given a FASTA file, transcript annotation, and ORF annotation, this pipeline creates several annotation files (genic, convergent, divergent, and intergenic regions) which are useful for other pipelines. It also creates a coverage file of GC% in a running window. This pipeline is usually called as a subworkflow of other pipelines rather than being run independently. This allows multiple pipelines (e.g. for different assays) to share the same 'build-annotations' pipeline.
 
 ## requirements:
 
