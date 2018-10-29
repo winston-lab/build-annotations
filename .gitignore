@@ -1,6 +1,11 @@
 config.yaml
 .snakemake/
-logs/
+logs/*
+logs/cluster/*
 
 README.html
+
+!logs/.gitkeep
+!logs/cluster/
+!logs/cluster/.gitkeep
 
