@@ -18,19 +18,19 @@ MOTIFS = set(subprocess.run(args="meme2meme " + " ".join(config["motifs"]["datab
 rule all:
     input:
         "config.yaml",
-        expand("annotations/" + config["genome"]["prefix"] + "{category}-regions.bed", category=["genic", "convergent", "divergent", "intergenic"]),
+        expand("annotations/" + config["genome"]["name"] + "_{category}-regions.bed", category=["genic", "convergent", "divergent", "intergenic"]),
         "gc_pct/" + os.path.splitext(os.path.basename(config["genome"]["fasta"]))[0] + "-GC_pct.bw",
-        "motifs/" + config["genome"]["prefix"] + "allmotifs.bed" if config["motifs"]["build_motif_databases"] else []
+        "motifs/" + config["genome"]["name"] + "allmotifs.bed" if config["motifs"]["build_motif_databases"] else []
 
 rule build_genic_annotation:
     input:
-        transcripts = config["genome"]["transcripts"],
-        orfs = config["genome"]["orf-annotation"],
+        transcripts = config["genome"]["transcript_annotation"],
+        orfs = config["genome"]["orf_annotation"],
         fasta = config["genome"]["fasta"]
     output:
-        "annotations/" + config["genome"]["prefix"] + "genic-regions.bed"
+        "annotations/" + config["genome"]["name"] + "_genic-regions.bed"
     params:
-        windowsize = config["genic-windowsize"]
+        windowsize = config["genic_windowsize"]
     conda: "envs/build_annotations.yaml"
     log : "logs/build_genic_annotation.log"
     shell: """
@@ -39,11 +39,11 @@ rule build_genic_annotation:
 
 rule build_convergent_annotation:
     input:
-        transcripts = config["genome"]["transcripts"],
+        transcripts = config["genome"]["transcript_annotation"],
     output:
-        "annotations/" + config["genome"]["prefix"] + "convergent-regions.bed"
+        "annotations/" + config["genome"]["name"] + "_convergent-regions.bed"
     params:
-        max_dist = config["max-convergent-dist"]
+        max_dist = config["max_convergent_dist"]
     conda: "envs/build_annotations.yaml"
     log: "logs/build_convergent_annotation.log"
     shell: """
@@ -52,12 +52,12 @@ rule build_convergent_annotation:
 
 rule build_divergent_annotation:
     input:
-        transcripts = config["genome"]["transcripts"],
+        transcripts = config["genome"]["transcript_annotation"],
         fasta = config["genome"]["fasta"]
     output:
-        "annotations/" + config["genome"]["prefix"] + "divergent-regions.bed"
+        "annotations/" + config["genome"]["name"] + "_divergent-regions.bed"
     params:
-        max_dist = config["max-divergent-dist"]
+        max_dist = config["max_divergent_dist"]
     conda: "envs/build_annotations.yaml"
     log: "logs/build_divergent_annotation.log"
     shell: """
@@ -66,12 +66,12 @@ rule build_divergent_annotation:
 
 rule build_intergenic_annotation:
     input:
-        transcripts = config["genome"]["transcripts"],
+        transcripts = config["genome"]["transcript_annotation"],
         fasta = config["genome"]["fasta"]
     output:
-        "annotations/" + config["genome"]["prefix"] + "intergenic-regions.bed"
+        "annotations/" + config["genome"]["name"] + "_intergenic-regions.bed"
     params:
-        genic_up = config["genic-windowsize"]
+        genic_up = config["genic_windowsize"]
     conda: "envs/build_annotations.yaml"
     log: "logs/build_intergenic_annotation.log"
     shell: """
@@ -84,7 +84,7 @@ rule build_gc_coverage:
     output:
         "gc_pct/" + os.path.splitext(os.path.basename(config["genome"]["fasta"]))[0] + "-GC_pct.bw"
     params:
-        binsize = config["gc-pct-window"] #must be odd integer
+        binsize = config["gc_pct_window"] #must be odd integer
     conda: "envs/build_annotations.yaml"
     log: "logs/build_gc_coverage.log"
     shell: """
@@ -96,7 +96,7 @@ rule build_motif_database:
         fasta = config["genome"]["fasta"],
         motif_db = config["motifs"]["databases"]
     output:
-        "motifs/" + config["genome"]["prefix"] + "allmotifs.meme"
+        "motifs/" + config["genome"]["name"] + "allmotifs.meme"
     log: "logs/build_motif_database.log"
     shell: """
         (meme2meme -bg <(fasta-get-markov {input.fasta}) {input.motif_db} | sed -e 's/\//_/g; s/&/_/g; s/{{/[/g; s/}}/]/g' > {output}) &> {log}
@@ -106,11 +106,11 @@ rule build_motif_database:
 rule fimo:
     input:
         fasta = config["genome"]["fasta"],
-        motif_db = "motifs/" + config["genome"]["prefix"] + "allmotifs.meme"
+        motif_db = "motifs/" + config["genome"]["name"] + "allmotifs.meme"
     output:
         bed = temp("motifs/.{motif}.bed") # a BED6+2 format
     params:
-        alpha = config["motifs"]["fimo-pval"]
+        alpha = config["motifs"]["fimo_pval"]
     log: "logs/fimo/fimo_{motif}.log"
     shell: """
         (fimo --motif {wildcards.motif} --bgfile <(fasta-get-markov {input.fasta}) --thresh {params.alpha} --text {input.motif_db} {input.fasta} | awk 'BEGIN{{FS=OFS="\t"}} NR>1 {{print $3, $4-1, $5, $1, -log($8)/log(10), $6, $2, $10}}' > {output.bed}) &> {log}
@@ -120,9 +120,10 @@ rule cat_fimo_motifs:
     input:
         bed = expand("motifs/.{motif}.bed", motif=MOTIFS)
     output:
-        bed = "motifs/" + config["genome"]["prefix"] + "allmotifs.bed"
+        bed = "motifs/" + config["genome"]["name"] + "allmotifs.bed"
     log: "logs/cat_fimo_motifs.log"
     threads: config["threads"]
     shell: """
         (cat {input.bed} | sort -k1,1 -k2,2n --parallel={threads} > {output.bed}) &> {log}
         """
+

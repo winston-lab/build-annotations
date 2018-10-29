@@ -2,6 +2,7 @@ config.yaml
 .snakemake/
 logs/*
 logs/cluster/*
+annotations/
 
 README.html
 
