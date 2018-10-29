@@ -9,17 +9,18 @@ localrules:
     build_convergent_annotation,
     build_divergent_annotation,
     build_intergenic_annotation,
-    build_gc_coverage
+    build_gc_coverage,
     build_motif_database,
+
+#get all motif names from motif databases, cleaning nasty characters in some motif names
+MOTIFS = set(subprocess.run(args="meme2meme " + " ".join(config["motifs"]["databases"]) + " | grep -e '^MOTIF' | cut -d ' ' -f2 | sed 's/\//_/g; s/&/_/g; s/{/[/g; s/}/]/g' ", shell=True, stdout=subprocess.PIPE, encoding='utf-8').stdout.split())
 
 rule all:
     input:
         "config.yaml",
-        os.path.dirname(os.path.abspath(config["genome"]["transcripts"])) + "/" + config["genome"]["prefix"] + "genic-regions.bed",
-        os.path.dirname(os.path.abspath(config["genome"]["transcripts"])) + "/" + config["genome"]["prefix"] + "convergent-regions.bed",
-        os.path.dirname(os.path.abspath(config["genome"]["transcripts"])) + "/" + config["genome"]["prefix"] + "divergent-regions.bed",
-        os.path.dirname(os.path.abspath(config["genome"]["transcripts"])) + "/" + config["genome"]["prefix"] + "intergenic-regions.bed",
-        os.path.splitext(os.path.abspath(config["genome"]["fasta"]))[0] + "-GC_pct.bw"
+        expand("annotations/" + config["genome"]["prefix"] + "{category}-regions.bed", category=["genic", "convergent", "divergent", "intergenic"]),
+        "gc_pct/" + os.path.splitext(os.path.basename(config["genome"]["fasta"]))[0] + "-GC_pct.bw",
+        "motifs/" + config["genome"]["prefix"] + "allmotifs.bed" if config["motifs"]["build_motif_databases"] else []
 
 rule build_genic_annotation:
     input:

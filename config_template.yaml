@@ -10,3 +10,16 @@ max-convergent-dist: 1000  # [INT] maximum distance downstream of genic sense TS
 max-divergent-dist: 500  # [INT] maximum distance upstream of genic sense TSS for an antisense peak to be considered divergent
 
 gc-pct-window: 21  # window size for calculating GC percentage. Must be a positive odd integer.
+
+motifs:
+    build_motif_databases: True
+    fimo-pval: 0.00001
+    databases :
+        - ../genomefiles_cerevisiae/motif_databases/yetfasco_all.meme
+        - ../genomefiles_cerevisiae/motif_databases/YEASTRACT_20130918.meme
+        - ../genomefiles_cerevisiae/motif_databases/macisaac_yeast.v1.meme
+        - ../genomefiles_cerevisiae/motif_databases/scpd_matrix.meme
+        - ../genomefiles_cerevisiae/motif_databases/SwissRegulon_s_cer.meme
+        - ../genomefiles_cerevisiae/motif_databases/yeast_uniprobe_GR09.meme
+
+threads: 4

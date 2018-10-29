@@ -14,6 +14,7 @@ dependencies:
     - bedtools=2.27.1
     - pybigwig=0.3.10
     - biopython=1.69
+    - meme=5.0.2=py36pl526h96dd833_3
 
 
 
