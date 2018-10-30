@@ -94,7 +94,7 @@ rule build_gc_coverage:
 rule build_motif_database:
     input:
         fasta = config["genome"]["fasta"],
-        motif_db = config["motifs"]["databases"] if config["motifs"]["build_motif_databases"] and config["motif"]["databases"] else []
+        motif_db = config["motifs"]["databases"] if config["motifs"]["build_motif_databases"] and config["motifs"]["databases"] else []
     output:
         "motifs/" + config["genome"]["name"] + "_allmotifs.meme"
     conda: "envs/build_annotations.yaml"
