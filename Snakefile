@@ -13,7 +13,7 @@ localrules:
     build_motif_database,
 
 #get all motif names from motif databases, cleaning nasty characters in some motif names
-MOTIFS = set(subprocess.run(args="meme2meme " + " ".join(config["motifs"]["databases"]) + " | grep -e '^MOTIF' | cut -d ' ' -f2 | sed 's/\//_/g; s/&/_/g; s/{/[/g; s/}/]/g' ", shell=True, stdout=subprocess.PIPE, encoding='utf-8').stdout.split())
+MOTIFS = set(subprocess.run(args="meme2meme " + " ".join(config["motifs"]["databases"]) + " | grep -e '^MOTIF' | cut -d ' ' -f2 | sed 's/\//_/g; s/&/_/g; s/{/[/g; s/}/]/g' ", shell=True, stdout=subprocess.PIPE, encoding='utf-8').stdout.split()) if config["motifs"]["build_motif_databases"] and config["motifs"]["databases"] else ""
 
 rule all:
     input:
@@ -94,7 +94,7 @@ rule build_gc_coverage:
 rule build_motif_database:
     input:
         fasta = config["genome"]["fasta"],
-        motif_db = config["motifs"]["databases"]
+        motif_db = config["motifs"]["databases"] if config["motifs"]["build_motif_databases"] and config["motif"]["databases"] else []
     output:
         "motifs/" + config["genome"]["name"] + "allmotifs.meme"
     log: "logs/build_motif_database.log"
