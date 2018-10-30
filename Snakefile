@@ -20,7 +20,7 @@ rule all:
         "config.yaml",
         expand("annotations/" + config["genome"]["name"] + "_{category}-regions.bed", category=["genic", "convergent", "divergent", "intergenic"]),
         "gc_pct/" + os.path.splitext(os.path.basename(config["genome"]["fasta"]))[0] + "-GC_pct.bw",
-        "motifs/" + config["genome"]["name"] + "allmotifs.bed" if config["motifs"]["build_motif_databases"] else []
+        "motifs/" + config["genome"]["name"] + "_allmotifs.bed" if config["motifs"]["build_motif_databases"] else []
 
 rule build_genic_annotation:
     input:
@@ -96,7 +96,8 @@ rule build_motif_database:
         fasta = config["genome"]["fasta"],
         motif_db = config["motifs"]["databases"]
     output:
-        "motifs/" + config["genome"]["name"] + "allmotifs.meme"
+        "motifs/" + config["genome"]["name"] + "_allmotifs.meme"
+    conda: "envs/build_annotations.yaml"
     log: "logs/build_motif_database.log"
     shell: """
         (meme2meme -bg <(fasta-get-markov {input.fasta}) {input.motif_db} | sed -e 's/\//_/g; s/&/_/g; s/{{/[/g; s/}}/]/g' > {output}) &> {log}
@@ -106,11 +107,12 @@ rule build_motif_database:
 rule fimo:
     input:
         fasta = config["genome"]["fasta"],
-        motif_db = "motifs/" + config["genome"]["name"] + "allmotifs.meme"
+        motif_db = "motifs/" + config["genome"]["name"] + "_allmotifs.meme"
     output:
         bed = temp("motifs/.{motif}.bed") # a BED6+2 format
     params:
         alpha = config["motifs"]["fimo_pval"]
+    conda: "envs/build_annotations.yaml"
     log: "logs/fimo/fimo_{motif}.log"
     shell: """
         (fimo --motif {wildcards.motif} --bgfile <(fasta-get-markov {input.fasta}) --thresh {params.alpha} --text {input.motif_db} {input.fasta} | awk 'BEGIN{{FS=OFS="\t"}} NR>1 {{print $3, $4-1, $5, $1, -log($8)/log(10), $6, $2, $10}}' > {output.bed}) &> {log}
@@ -120,7 +122,8 @@ rule cat_fimo_motifs:
     input:
         bed = expand("motifs/.{motif}.bed", motif=MOTIFS)
     output:
-        bed = "motifs/" + config["genome"]["name"] + "allmotifs.bed"
+        bed = "motifs/" + config["genome"]["name"] + "_allmotifs.bed"
+    conda: "envs/build_annotations.yaml"
     log: "logs/cat_fimo_motifs.log"
     threads: config["threads"]
     shell: """

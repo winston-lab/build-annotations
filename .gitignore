@@ -3,6 +3,10 @@ config.yaml
 logs/*
 logs/cluster/*
 annotations/
+gc_pct/
+motifs/
+snakemake.err
+snakemake.log
 
 README.html
 
