@@ -46,8 +46,8 @@ vim config.yaml    # or use your favorite editor
 **2**. **STOP!** If you only need this pipeline as a subworkflow of another pipeline, you're done! If you really want to run this pipeline independently, create and activate the `build_annotations` virtual environment for the pipeline using conda. The virtual environment creation can take a while.
 
 ```bash
-# create the snakemake_default environment
-conda env create -v -f envs/build-annotations.yaml
+# create the build_annotations_default environment
+conda env create -v -f envs/build_annotations.yaml
 
 # activate the environment
 source activate build_annotations
@@ -59,10 +59,10 @@ source activate build_annotations
 **3**. Do a dry run of the pipeline to see what files will be created.
 
 ```bash
-snakemake -p --dry-run
+snakemake -p --dryrun
 ```
 
-**4**. Run the pipeline using the above command, omitting the `--dry-run` flag. 
+**4**. Run the pipeline using the above command, omitting the `--dryrun` flag. 
 
 ```bash
 snakemake -p
