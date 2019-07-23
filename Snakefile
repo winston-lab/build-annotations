@@ -13,8 +13,8 @@ localrules:
     build_motif_database,
 
 #get all motif names from motif databases, cleaning nasty characters in some motif names
-MOTIFS_DNA = set(subprocess.run(args="meme2meme " + " ".join(config["motifs"]["dna_motif_databases"]) + " | grep -e '^MOTIF' | cut -d ' ' -f2 | sed 's/\//_/g; s/&/_/g; s/{/[/g; s/}/]/g' ", shell=True, stdout=subprocess.PIPE, encoding='utf-8').stdout.split()) if config["motifs"]["build_motif_databases"] and config["motifs"]["dna_motif_databases"] else ""
-MOTIFS_RNA = set(subprocess.run(args="meme2meme " + " ".join(config["motifs"]["rna_motif_databases"]) + " | grep -e '^MOTIF' | cut -d ' ' -f2 | sed 's/\//_/g; s/&/_/g; s/{/[/g; s/}/]/g' ", shell=True, stdout=subprocess.PIPE, encoding='utf-8').stdout.split()) if config["motifs"]["build_motif_databases"] and config["motifs"]["rna_motif_databases"] else ""
+MOTIFS_DNA = set(subprocess.run(args="meme2meme " + " ".join(config["motifs"]["dna_motif_databases"]) + " | rg -e '^MOTIF' | cut -d ' ' -f2 | sed 's/\//_/g; s/&/_/g; s/{/[/g; s/}/]/g' ", shell=True, stdout=subprocess.PIPE, encoding='utf-8').stdout.split()) if config["motifs"]["build_motif_databases"] and config["motifs"]["dna_motif_databases"] else ""
+MOTIFS_RNA = set(subprocess.run(args="meme2meme " + " ".join(config["motifs"]["rna_motif_databases"]) + " | rg -e '^MOTIF' | cut -d ' ' -f2 | sed 's/\//_/g; s/&/_/g; s/{/[/g; s/}/]/g' ", shell=True, stdout=subprocess.PIPE, encoding='utf-8').stdout.split()) if config["motifs"]["build_motif_databases"] and config["motifs"]["rna_motif_databases"] else ""
 
 wildcard_constraints:
     nucleotide="dna|rna"
